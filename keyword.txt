@@ -1,0 +1,26 @@
+#######################################
+# Syntax highlighting for LTC2959
+#######################################
+
+LTC2959        KEYWORD1
+
+# Public Methods
+begin          KEYWORD2
+readVoltage    KEYWORD2
+readCurrent    KEYWORD2
+readTemperature  KEYWORD2
+readCharge_mAh  KEYWORD2
+enableCounter  KEYWORD2
+disableCounter KEYWORD2
+resetChargeCounter KEYWORD2
+readMaxVoltage KEYWORD2
+readMinVoltage KEYWORD2
+readMaxCurrent KEYWORD2
+readMinCurrent KEYWORD2
+OverwriteMinCurrent KEYWORD2
+
+# Enum Values
+NO_DEADBAND     LITERAL1
+LOW_DEADBAND    LITERAL1
+MEDIUM_DEADBAND LITERAL1
+HIGH_DEADBAND   LITERAL1
