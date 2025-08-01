@@ -1,5 +1,5 @@
 #include <Wire.h>
-#include "LTC2959.h"
+#include <LTC2959.h>
 
 // Create an instance of the LTC2959 class
 // You can pass a different Rsense value if not using 0.250Ω
