@@ -83,9 +83,10 @@ bool LTC2959::disableCounter() {
 }
 
 float LTC2959::readCharge_mAh() {
-  uint32_t raw = readRegister32(0x03);  // 0x03 is the starting register for columb readings
-  // Each count = 533 nAh
-  return raw * 0.000533;  // in mAh
+uint32_t raw = readRegister32(0x03);
+int32_t delta = (int32_t)(raw - 0x80000000);  // Offset from mid-scale
+float mAh = delta * 0.000533;
+return mAh;
 }
 
 
@@ -128,10 +129,14 @@ uint32_t LTC2959::readRegister32(uint8_t reg) {
 void LTC2959::resetChargeCounter() {
   Wire.beginTransmission(_address);
   Wire.write(0x03);           // Start at register 0x03 (ACR MSB)
-  Wire.write((uint8_t)0x00);  // <31:24>
-  Wire.write((uint8_t)0x00);  // <23:16>
-  Wire.write((uint8_t)0x00);  // <15:8>
-  Wire.write((uint8_t)0x00);  // <7:0>
+  //used the middle range of the counter 
+  //0x00000000 (0) → 0xFFFFFFFF (4,294,967,295) is the full range
+  // if during reset, i reset to zero. When charging starts the current
+  // is negative so the variable will underflow; hence, we reset at the middle.
+  Wire.write(0x80);  // <31:24>
+  Wire.write(0x00);  // <23:16>
+  Wire.write(0x00);  // <15:8>
+  Wire.write(0x00);  // <7:0>
   Wire.endTransmission();
 }
 
