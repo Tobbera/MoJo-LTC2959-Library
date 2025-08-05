@@ -91,13 +91,6 @@ bool LTC2959::disableCounter() {
   }
 }
 
-float LTC2959::readCharge_mAh() {
-uint32_t raw = readRegister32(0x03);
-int32_t delta = (int32_t)(raw - 0x80000000);  // Offset from mid-scale
-float mAh = delta * 0.000533;
-return mAh;
-}
-
 int16_t LTC2959::readRegister16(uint8_t reg) {
   Wire.beginTransmission(_address);
   Wire.write(reg);
@@ -174,6 +167,7 @@ void LTC2959::writeRegister(uint8_t reg, uint8_t value) {
   Wire.write(value);
   Wire.endTransmission();
 }
+
 
 
 
