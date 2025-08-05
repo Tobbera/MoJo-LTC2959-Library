@@ -61,6 +61,7 @@ float LTC2959::readCharge_mAh()
   int32_t delta = (int32_t)(raw - 0x80000000UL);
   return delta * (qLSB_nAh / 1.0e6f);
 }
+
 bool LTC2959::enableCounter(Deadband deadband) {
 
   writeRegister(0x02, deadband);  // deadband: voltage level to ignore counting
@@ -186,6 +187,7 @@ void LTC2959::writeRegister(uint8_t reg, uint8_t value) {
   Wire.write(value);
   Wire.endTransmission();
 }
+
 
 
 
