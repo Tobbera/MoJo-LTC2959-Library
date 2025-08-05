@@ -63,7 +63,6 @@ float LTC2959::readCharge_mAh()
 }
 
 bool LTC2959::enableCounter(Deadband deadband) {
-
   writeRegister(0x02, deadband);  // deadband: voltage level to ignore counting
   // verify by reading back
   Wire.beginTransmission(_address);
@@ -75,13 +74,11 @@ bool LTC2959::enableCounter(Deadband deadband) {
     uint8_t ctrl = Wire.read();
     return (ctrl & 0x08) == 0;  // Bit 3 should be 0 if counting is enabled
   }
-
   return false;
 }
 
 bool LTC2959::disableCounter() {
   writeRegister(0x02, 0x1C);  // disable counting
-
   // verify by reading back
   Wire.beginTransmission(_address);
   Wire.write(0x02);
@@ -100,7 +97,6 @@ int32_t delta = (int32_t)(raw - 0x80000000);  // Offset from mid-scale
 float mAh = delta * 0.000533;
 return mAh;
 }
-
 
 int16_t LTC2959::readRegister16(uint8_t reg) {
   Wire.beginTransmission(_address);
@@ -157,29 +153,20 @@ float LTC2959::readMaxVoltage() {
   return 62.6 * raw / 65536.0;
 }
 
-
-
-
 float LTC2959::readMinVoltage() {
-
   uint16_t raw = readRegister16(0x17);
   return 62.6 * raw / 65536.0;
 }
-
 
 float LTC2959::readMaxCurrent() {
   int16_t raw = readRegister16(0x1F);
   return (97.5e-3 / _rSense) * (raw / 32768.0);
 }
 
-
-
 float LTC2959::readMinCurrent() {
   int16_t raw = readRegister16(0x21);
   return (97.5e-3 / _rSense) * (raw / 32768.0);
 }
-
-
 
 void LTC2959::writeRegister(uint8_t reg, uint8_t value) {
   Wire.beginTransmission(_address);
@@ -187,6 +174,7 @@ void LTC2959::writeRegister(uint8_t reg, uint8_t value) {
   Wire.write(value);
   Wire.endTransmission();
 }
+
 
 
 
