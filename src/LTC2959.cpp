@@ -44,23 +44,23 @@ float LTC2959::readTemperature() {
   return 825.0 * raw / 65536.0 - 273.15;
 }
 
-// This does not take into account 250 mOhm sense resistor:
-/* float LTC2959::readCharge_mAh() {
-  uint32_t raw = readRegister32(0x03);  // 0x03 is the starting register for columb readings
-  // Each count = 533 nAh
-  return raw * 0.000533;  // in mAh
-} */
+float LTC2959::readCurrent()
+{
+  writeRegister(_adcAddr, _adcConfig); // tell ADC to convert voltage, current and temp readings
+  int16_t raw = readRegister16(0x19);  // 0x19 = Current MSB
+  return (97.5e-3 / _rSense) * (raw / 32768.0);
+}
 
 // Dev board "MoJo" has a sense resistor of 250 mOhm, instead of the 50 mOhm that is recomended in the datasheet of the LTC2959. 
 // Because of this we need to do some additional maths when reading the mAh counter. 
 // For Rsense = 0.250 Ω:
-const float qLSB_nAh = 533.0f * (50.0e-3f / 0.25f); // ≈106.6 nAh   // 0.25f = 250 mOhm.
+const float qLSB_nAh = 533.0f * (50.0e-3f / 0.25f); // ≈106.6 nAh
 float LTC2959::readCharge_mAh()
 {
   uint32_t raw = readRegister32(0x03);
-  return raw * (qLSB_nAh / 1.0e6f);
+  int32_t delta = (int32_t)(raw - 0x80000000UL);
+  return delta * (qLSB_nAh / 1.0e6f);
 }
-
 bool LTC2959::enableCounter(Deadband deadband) {
 
   writeRegister(0x02, deadband);  // deadband: voltage level to ignore counting
@@ -186,5 +186,6 @@ void LTC2959::writeRegister(uint8_t reg, uint8_t value) {
   Wire.write(value);
   Wire.endTransmission();
 }
+
 
 
